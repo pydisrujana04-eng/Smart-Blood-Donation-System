@@ -18,6 +18,7 @@ const cors     = require('cors');
 const twilio   = require('twilio');
 const admin    = require('firebase-admin');
 const axios    = require('axios');
+const path = require('path');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
@@ -88,9 +89,11 @@ const DB = {
 /* ──────────────────────────────────────────────────────────────
    MIDDLEWARE
    ────────────────────────────────────────────────────────────── */
-app.use(cors({ origin: '*' }));           // Allow all origins (restrict in production)
+app.use(cors({ origin: '*' }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(express.static(__dirname));
 /* ================================================================
    API LOGGER FILTER
    Prints every REQUEST and RESPONSE
@@ -217,28 +220,9 @@ app.use((req, _res, next) => {
 /* ──────────────────────────────────────────────────────────────
    HEALTH CHECK
    ────────────────────────────────────────────────────────────── */
-app.get('/', (_req, res) => {
-  res.json({
-    status:  'LifeLink API is running 🩸',
-    version: '1.0.0',
-    routes:  [
-      'POST /register-donor',
-      'POST /register-patient',
-      'POST /register-hospital',
-      'POST /register-blood-bank',
-      'POST /find-donors',
-      'POST /send-sms',
-      'POST /send-emergency',
-      'POST /send-emergency-sms',
-      'POST /send-otp',
-      'POST /verify-otp',
-      'POST /register-token',
-      'POST /notify-patient',
-      'POST /chat/send',
-      'POST /call',
-      'GET  /dashboard/stats',
-    ],
-  });
+
+      app.get('/', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 /* ──────────────────────────────────────────────────────────────
